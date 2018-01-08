@@ -1,71 +1,43 @@
-var timer;
+$(document).ready(function(){
 
-            var timerCurrent;
+var timer; 
+var timerSeconds;
+var timerFinish;
+function drawTimer(percent,seconds){
+    (percent > 50 ? $('#slice').addClass("gt50") : null);
+    (percent > 50 ? $('#piefill').addClass("pie fill") : null);
 
-            var timerFinish;
+    var deg = 360/100*percent;
+    var pieSlice = $('#slice .pie');
+    var showSec = $('.percent');
+    pieSlice.css({
+        '-moz-transform':'rotate('+deg+'deg)',
+        '-webkit-transform':'rotate('+deg+'deg)',
+        '-o-transform':'rotate('+deg+'deg)',
+        'transform':'rotate('+deg+'deg)'
+    });
 
-            var timerSeconds;
+    showSec.html(seconds);
 
-            function drawTimer(percent,seconds){
+};
 
-                $('div.timer').html('<div class="percent"></div><div id="slice"'+(percent > 50?' class="gt50"':'')+'><div class="pie"></div>'+(percent > 50?'<div class="pie fill"></div>':'')+'</div>');
+function stopWatch(){
+    var seconds = (timerFinish-(new Date().getTime()))/1000;
+    if(seconds <= 0){
+        drawTimer(100);
+        clearInterval(timer);
+    }else{
+        var percent = 100-((seconds/timerSeconds)*100);
+        drawTimer(percent,Math.round(seconds));
+    }
+};
 
-                var deg = 360/100*percent;
+var startTimer = function(){
+    timerSeconds = 10;
 
-                $('#slice .pie').css({
+    timerFinish = new Date().getTime()+(timerSeconds*1000);
+    timer = setInterval(stopWatch, 50);
 
-                    '-moz-transform':'rotate('+deg+'deg)',
-
-                    '-webkit-transform':'rotate('+deg+'deg)',
-
-                    '-o-transform':'rotate('+deg+'deg)',
-
-                    'transform':'rotate('+deg+'deg)'
-
-                });
-
-                $('.percent').html(seconds);
-
-            };
-
-            function stopWatch(){
-
-                var seconds = (timerFinish-(new Date().getTime()))/1000;
-
-                if(seconds <= 0){
-
-                    drawTimer(100);
-
-                    clearInterval(timer);
-                    
-                    a();
-
-
-                }else{
-
-                    var percent = 100-((seconds/timerSeconds)*100);
-
-                    drawTimer(percent,Math.round(seconds));
-
-                }
-
-            };
-
-            $(document).ready(function(){
-
-                var startTimer = function(){
-
-                    timerSeconds = 10;
-
-                    timerCurrent = 0;
-
-                    timerFinish = new Date().getTime()+(timerSeconds*1000);
-
-                    timer = setInterval('stopWatch()',50);
-                    if(timerSeconds===timerCurrent){
-                        allert('a');
-                    }
-
-                };
-                startTimer();
-            });
+};
+startTimer();
+});
